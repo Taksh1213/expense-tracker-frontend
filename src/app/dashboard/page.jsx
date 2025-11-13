@@ -1,4 +1,5 @@
 "use client";
+import api from "@/utils/api";
 import { useEffect, useState } from "react";
 import {
   PieChart,
@@ -17,6 +18,8 @@ export default function DashboardPage() {
   const [categories, setCategories] = useState([]);
   const router = useRouter();
 
+  const BASE_URL = "https://expense-tracker-backend-vsxb.onrender.com";
+
   // ✅ Centralized fetcher
   const fetchData = async () => {
     try {
@@ -27,15 +30,15 @@ export default function DashboardPage() {
         return;
       }
 
-      // ✅ lowercase authorization header (important!)
+      // Authorization header
       const headers = { authorization: `Bearer ${token}` };
 
       // Fetch all endpoints in parallel
       const [profileRes, summaryRes, recentRes, catRes] = await Promise.all([
-        fetch("http://localhost:5000/api/auth/profile", { headers }),
-        fetch("http://localhost:5000/api/expenses/summary", { headers }),
-        fetch("http://localhost:5000/api/expenses/recent", { headers }),
-        fetch("http://localhost:5000/api/expenses/categories", { headers }),
+        fetch(`${BASE_URL}/api/auth/profile`, { headers }),
+        fetch(`${BASE_URL}/api/expenses/summary`, { headers }),
+        fetch(`${BASE_URL}/api/expenses/recent`, { headers }),
+        fetch(`${BASE_URL}/api/expenses/categories`, { headers }),
       ]);
 
       // If unauthorized → redirect to login
@@ -65,10 +68,10 @@ export default function DashboardPage() {
     }
   };
 
-  // ✅ Auto-refresh every 10 seconds
+  // Refresh every 10 seconds
   useEffect(() => {
-    fetchData(); // first load
-    const interval = setInterval(fetchData, 10000); // refresh every 10s
+    fetchData(); 
+    const interval = setInterval(fetchData, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -77,13 +80,13 @@ export default function DashboardPage() {
 
   return (
     <div className="p-8 bg-gradient-to-br from-[#ecfdf5] via-[#e8f5e9] to-[#e0f2fe] min-h-screen rounded-2xl shadow-inner">
-      
-      {/* ✅ Header Section */}
+
+      {/* Header */}
       <div className="flex items-center gap-4 mb-10">
         <img
           src={
             profile.photo
-              ? `http://localhost:5000${profile.photo}`
+              ? `${BASE_URL}${profile.photo}`
               : "/default-avatar.png"
           }
           alt="Profile"
@@ -99,7 +102,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ✅ Summary Cards */}
+      {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white rounded-2xl p-6 shadow-md">
           <h3 className="text-gray-600 mb-1">Income</h3>
@@ -127,13 +130,15 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ✅ Charts & Transactions */}
+      {/* Charts & Recent */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Expense Categories Pie Chart */}
+
+        {/* Pie Chart */}
         <div className="bg-white rounded-2xl p-6 shadow-md">
           <h3 className="text-lg font-semibold text-gray-700 mb-4">
             Expense Categories
           </h3>
+
           {categories.length > 0 ? (
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
@@ -171,6 +176,7 @@ export default function DashboardPage() {
           <h3 className="text-lg font-semibold text-gray-700 mb-4">
             Recent Transactions
           </h3>
+
           {recent.length > 0 ? (
             <div className="space-y-3">
               {recent.map((tx, i) => (

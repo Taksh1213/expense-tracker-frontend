@@ -1,7 +1,9 @@
 "use client";
+import api from "@/utils/api";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+
 
 export default function LoginPage() {
   const router = useRouter();
@@ -10,12 +12,14 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
 
+  const BASE_URL = "https://expense-tracker-backend-vsxb.onrender.com";
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch("https://expense-tracker-backend-vsxb.onrender.com/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
