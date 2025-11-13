@@ -1,0 +1,42 @@
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 🌙 Global Dark Mode */
+.dark {
+  color-scheme: dark;
+  background-color: #0f172a; /* dark slate */
+}
+
+.dark body {
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
+
+/* Optional: dark scrollbar */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #334155;
+  border-radius: 10px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInSlow {
+  from { opacity: 0; transform: translateY(25px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.8s ease-out;
+}
+
+.animate-fadeInSlow {
+  animation: fadeInSlow 1.2s ease-out;
+}
