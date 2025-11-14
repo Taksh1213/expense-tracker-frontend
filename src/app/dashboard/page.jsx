@@ -1,5 +1,4 @@
 "use client";
-import api from "@/utils/api";
 import { useEffect, useState } from "react";
 import {
   PieChart,
@@ -20,20 +19,19 @@ export default function DashboardPage() {
 
   const BASE_URL = "https://expense-tracker-backend-vsxb.onrender.com";
 
-  // ✅ Centralized fetcher
+  // Fetch Data
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("accessToken");
+
       if (!token) {
-        console.warn("⚠️ No access token found. Redirecting to login...");
         router.push("/login");
         return;
       }
 
-      // Authorization header
+      // ✅ FIXED (Correct template literal)
       const headers = { authorization: `Bearer ${token}` };
 
-      // Fetch all endpoints in parallel
       const [profileRes, summaryRes, recentRes, catRes] = await Promise.all([
         fetch(`${BASE_URL}/api/auth/profile`, { headers }),
         fetch(`${BASE_URL}/api/expenses/summary`, { headers }),
@@ -41,9 +39,7 @@ export default function DashboardPage() {
         fetch(`${BASE_URL}/api/expenses/categories`, { headers }),
       ]);
 
-      // If unauthorized → redirect to login
       if (profileRes.status === 401 || summaryRes.status === 401) {
-        console.warn("🔒 Token invalid or expired. Redirecting to login...");
         localStorage.removeItem("accessToken");
         router.push("/login");
         return;
@@ -61,37 +57,38 @@ export default function DashboardPage() {
         income: summaryData?.income || 0,
         totalExpense: summaryData?.totalExpense || 0,
       });
-      setRecent(Array.isArray(recentData) ? recentData : recentData.data || []);
-      setCategories(Array.isArray(catData) ? catData : catData.data || []);
-    } catch (err) {
-      console.error("❌ Dashboard fetch error:", err);
+      setRecent(Array.isArray(recentData) ? recentData : []);
+      setCategories(Array.isArray(catData) ? catData : []);
+    } catch (error) {
+      console.error("Dashboard Error:", error);
     }
   };
+    useEffect(() => {
+  fetchData();
+  const interval = setInterval(fetchData, 10000);
+  return () => clearInterval(interval);
+}, []);
 
-  // Refresh every 10 seconds
-  useEffect(() => {
-    fetchData(); 
-    const interval = setInterval(fetchData, 10000);
-    return () => clearInterval(interval);
-  }, []);
 
   const balance = summary.income - summary.totalExpense;
+
   const COLORS = ["#4ade80", "#22c55e", "#16a34a", "#86efac", "#15803d"];
 
   return (
     <div className="p-8 bg-gradient-to-br from-[#ecfdf5] via-[#e8f5e9] to-[#e0f2fe] min-h-screen rounded-2xl shadow-inner">
 
-      {/* Header */}
+      {/* HEADER */}
       <div className="flex items-center gap-4 mb-10">
-        <img
-          src={
-            profile.photo
-              ? `${BASE_URL}${profile.photo}`
-              : "/default-avatar.png"
-          }
-          alt="Profile"
-          className="w-14 h-14 rounded-full border-2 border-green-400 object-cover shadow-sm"
-        />
+                <img
+  src={
+    profile.photo
+      ? `${BASE_URL}${profile.photo}`
+      : "/default-avatar.png"
+  }
+  alt="Profile"
+  className="w-14 h-14 rounded-full border-2 border-green-400 object-cover shadow-sm"
+/>
+
         <div>
           <h2 className="text-2xl font-semibold text-gray-800">
             Hi, {profile.username || "User"} 👋
@@ -102,7 +99,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Summary Cards */}
+      {/* SUMMARY CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white rounded-2xl p-6 shadow-md">
           <h3 className="text-gray-600 mb-1">Income</h3>
@@ -130,10 +127,10 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Charts & Recent */}
+      {/* CHARTS & RECENT */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        {/* Pie Chart */}
+        {/* CATEGORY PIE CHART */}
         <div className="bg-white rounded-2xl p-6 shadow-md">
           <h3 className="text-lg font-semibold text-gray-700 mb-4">
             Expense Categories
@@ -153,14 +150,11 @@ export default function DashboardPage() {
                   paddingAngle={5}
                   label={({ name, value }) => `${name} ₹${value}`}
                 >
-                  {categories.map((_, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
+                  {categories.map((_, i) => (
+                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value) => `₹${value}`} />
+                <Tooltip formatter={(v) => `₹${v}`} />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
@@ -171,7 +165,7 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Recent Transactions */}
+        {/* RECENT TRANSACTIONS */}
         <div className="bg-white rounded-2xl p-6 shadow-md">
           <h3 className="text-lg font-semibold text-gray-700 mb-4">
             Recent Transactions
@@ -190,11 +184,7 @@ export default function DashboardPage() {
                       {new Date(tx.date).toLocaleDateString()}
                     </p>
                   </div>
-                  <p
-                    className={`font-semibold ${
-                      tx.amount > 0 ? "text-red-500" : "text-green-600"
-                    }`}
-                  >
+                  <p className="font-semibold text-red-500">
                     ₹{tx.amount.toLocaleString("en-IN")}
                   </p>
                 </div>
@@ -202,7 +192,7 @@ export default function DashboardPage() {
             </div>
           ) : (
             <p className="text-gray-400 text-center mt-10">
-              No recent transactions yet
+              No transactions yet
             </p>
           )}
         </div>

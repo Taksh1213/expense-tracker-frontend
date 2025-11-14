@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
-
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -19,22 +18,23 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const res = await fetch("https://expense-tracker-backend-vsxb.onrender.com/api/auth/login", {
+      const res = await fetch(`${BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
+        credentials: "include", // ✅ IMPORTANT for refreshToken cookie
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Login failed");
 
-      // ✅ Save access token locally
+      // ✅ Save access token
       localStorage.setItem("accessToken", data.accessToken);
 
-      // ✅ Trigger success animation
+      // Success animation
       setIsSuccess(true);
 
-      // ✅ Redirect after short delay
+      // Redirect
       setTimeout(() => router.push("/dashboard"), 1200);
     } catch (err) {
       setError(err.message);
