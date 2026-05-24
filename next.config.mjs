@@ -6,6 +6,13 @@ const __dirname = path.dirname(__filename);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  compress: true,
+  poweredByHeader: false,
+  productionBrowserSourceMaps: false,
+  experimental: {
+    optimizePackageImports: ["lucide-react", "recharts"],
+  },
+
   turbopack: {
     root: __dirname,
   },
@@ -14,7 +21,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "expense-tracker-backend-vsxb.onrender.com",
+        hostname: "expense-tracker-backend-vz73.onrender.com",
       },
       {
         protocol: "http",

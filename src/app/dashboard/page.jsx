@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { API_BASE_URL, API_URL } from "@/utils/config";
 import { usePreferences } from "@/context/PreferencesContext";
 
@@ -19,6 +19,31 @@ import { usePreferences } from "@/context/PreferencesContext";
  *
  * Drop this into: app/dashboard/page.jsx
  */
+
+const createStaticMotion = (Tag) => {
+  function StaticMotion({ children, ...props }) {
+    [
+      "variants",
+      "initial",
+      "animate",
+      "exit",
+      "transition",
+      "whileHover",
+    ].forEach((prop) => {
+      delete props[prop];
+    });
+
+    return <Tag {...props}>{children}</Tag>;
+  }
+
+  return StaticMotion;
+};
+
+const motion = {
+  div: createStaticMotion("div"),
+  h2: createStaticMotion("h2"),
+  p: createStaticMotion("p"),
+};
 
 // Small reusable motion variants
 const containerVariants = {
@@ -177,9 +202,11 @@ export default function DashboardPage() {
         ) : (
           // actual profile
           <div className="flex items-center gap-4">
-            <img
+            <Image
               src={profile.photo ? `${API_URL}${profile.photo}` : "/default-avatar.png"}
               alt="Profile"
+              width={56}
+              height={56}
               className="w-14 h-14 rounded-full border-2 border-green-400 object-cover shadow-sm"
             />
             <div>
