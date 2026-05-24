@@ -69,6 +69,9 @@ export const metadata = {
       "max-video-preview": -1,
     },
   },
+  verification: {
+    google: "0tBrmiGlRZPSHiHcdwV7S8EzxM2Jh-1gA0DI4NEsTDE",
+  },
   manifest: "/manifest.webmanifest",
 };
 
