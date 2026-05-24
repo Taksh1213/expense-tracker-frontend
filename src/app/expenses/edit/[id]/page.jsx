@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import { API_BASE_URL } from "@/utils/config";
 
 export default function EditTransactionPage() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function EditTransactionPage() {
       }
 
       try {
-        const res = await fetch(`http://localhost:5000/api/expenses/${id}`, {
+        const res = await fetch(`${API_BASE_URL}/expenses/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -71,7 +72,7 @@ export default function EditTransactionPage() {
     }
 
     try {
-      const endpoint = `http://localhost:5000/api/expenses/${id}`;
+      const endpoint = `${API_BASE_URL}/expenses/${id}`;
       const res = await fetch(endpoint, {
         method: "PUT",
         headers: {

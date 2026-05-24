@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Upload } from "lucide-react";
+import { API_BASE_URL, API_URL } from "@/utils/config";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -25,7 +26,7 @@ export default function ProfilePage() {
       if (!token) return router.push("/login");
 
       try {
-        const res = await fetch("http://localhost:5000/api/auth/profile", {
+        const res = await fetch(`${API_BASE_URL}/auth/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -33,7 +34,7 @@ export default function ProfilePage() {
 
         setProfile(data);
         setFormData({ username: data.username, password: "" });
-        if (data.photo) setPreview(`http://localhost:5000${data.photo}`);
+        if (data.photo) setPreview(`${API_URL}${data.photo}`);
       } catch (err) {
         setMessage(`❌ ${err.message}`);
       }
@@ -72,7 +73,7 @@ export default function ProfilePage() {
       if (formData.password) form.append("password", formData.password);
       if (photo) form.append("photo", photo);
 
-      const res = await fetch("http://localhost:5000/api/auth/profile", {
+      const res = await fetch(`${API_BASE_URL}/auth/profile`, {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
         body: form,
@@ -83,7 +84,7 @@ export default function ProfilePage() {
 
       setMessage("✅ Profile updated successfully!");
       setProfile(data);
-      if (data.photo) setPreview(data.photo);
+      if (data.photo) setPreview(`${API_URL}${data.photo}`);
       setFormData({ username: data.username, password: "" });
     } catch (err) {
       setMessage(`❌ ${err.message}`);

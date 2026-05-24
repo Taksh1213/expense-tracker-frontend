@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Edit, Trash2 } from "lucide-react";
+import { API_BASE_URL } from "@/utils/config";
 
 export default function ViewExpensesPage() {
   const router = useRouter();
@@ -14,7 +15,7 @@ export default function ViewExpensesPage() {
     if (!token) return;
 
     try {
-      const res = await fetch("http://localhost:5000/api/expenses", {
+      const res = await fetch(`${API_BASE_URL}/expenses`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -32,7 +33,7 @@ export default function ViewExpensesPage() {
     if (!confirm("Are you sure you want to delete this transaction?")) return;
     const token = localStorage.getItem("accessToken");
     try {
-      const res = await fetch(`http://localhost:5000/api/expenses/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/expenses/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

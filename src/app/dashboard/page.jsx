@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { API_BASE_URL, API_URL } from "@/utils/config";
 
 /**
  * Dashboard page (JS) — Section-by-section skeleton loading + animations
@@ -51,7 +52,7 @@ export default function DashboardPage() {
 
   const fetchProfile = useCallback(async (headers) => {
     try {
-      const res = await fetch("http://localhost:5000/api/auth/profile", { headers });
+      const res = await fetch(`${API_BASE_URL}/auth/profile`, { headers });
       if (res.status === 401) {
         localStorage.removeItem("accessToken");
         router.push("/login");
@@ -66,7 +67,7 @@ export default function DashboardPage() {
 
   const fetchSummary = useCallback(async (headers) => {
     try {
-      const res = await fetch("http://localhost:5000/api/expenses/summary", { headers });
+      const res = await fetch(`${API_BASE_URL}/expenses/summary`, { headers });
       if (res.status === 401) {
         localStorage.removeItem("accessToken");
         router.push("/login");
@@ -81,7 +82,7 @@ export default function DashboardPage() {
 
   const fetchRecent = useCallback(async (headers) => {
     try {
-      const res = await fetch("http://localhost:5000/api/expenses/recent", { headers });
+      const res = await fetch(`${API_BASE_URL}/expenses/recent`, { headers });
       return await res.json();
     } catch (err) {
       console.error("recent fetch error", err);
@@ -91,7 +92,7 @@ export default function DashboardPage() {
 
   const fetchCategories = useCallback(async (headers) => {
     try {
-      const res = await fetch("http://localhost:5000/api/expenses/categories", { headers });
+      const res = await fetch(`${API_BASE_URL}/expenses/categories`, { headers });
       return await res.json();
     } catch (err) {
       console.error("categories fetch error", err);
@@ -174,7 +175,7 @@ export default function DashboardPage() {
           // actual profile
           <div className="flex items-center gap-4">
             <img
-              src={profile.photo ? `http://localhost:5000${profile.photo}` : "/default-avatar.png"}
+              src={profile.photo ? `${API_URL}${profile.photo}` : "/default-avatar.png"}
               alt="Profile"
               className="w-14 h-14 rounded-full border-2 border-green-400 object-cover shadow-sm"
             />

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { API_BASE_URL } from "@/utils/config";
 
 export default function LogoutPage() {
   const router = useRouter();
@@ -12,7 +13,7 @@ export default function LogoutPage() {
 
       try {
         // ✅ Hit backend logout route
-        await fetch("http://localhost:5000/api/auth/logout", {
+        await fetch(`${API_BASE_URL}/auth/logout`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

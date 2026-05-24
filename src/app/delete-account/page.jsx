@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Trash2 } from "lucide-react";
+import { API_BASE_URL } from "@/utils/config";
 
 export default function DeleteAccountPage() {
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function DeleteAccountPage() {
 
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:5000/api/auth/delete-account", {
+      const res = await fetch(`${API_BASE_URL}/auth/delete-account`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

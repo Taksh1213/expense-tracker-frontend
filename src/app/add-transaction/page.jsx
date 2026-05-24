@@ -1,8 +1,8 @@
 "use client";
-import api from "@/utils/api";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react"; // icon for back button
+import { API_BASE_URL } from "@/utils/config";
 
 export default function AddTransactionPage() {
   const router = useRouter();
@@ -40,8 +40,8 @@ export default function AddTransactionPage() {
     try {
       const endpoint =
         type === "income"
-          ? "http://localhost:5000/api/income"
-          : "http://localhost:5000/api/expenses";
+          ? `${API_BASE_URL}/income`
+          : `${API_BASE_URL}/expenses`;
 
       const res = await fetch(endpoint, {
         method: "POST",

@@ -15,6 +15,7 @@ import {
   Legend,
 } from "recharts";
 import { ArrowLeft } from "lucide-react";
+import { API_BASE_URL } from "@/utils/config";
 
 export default function AnalyticsPage() {
   const router = useRouter();
@@ -30,10 +31,10 @@ export default function AnalyticsPage() {
       if (!token) return router.push("/login");
 
       const [summaryRes, catRes] = await Promise.all([
-        fetch("http://localhost:5000/api/expenses/summary", {
+        fetch(`${API_BASE_URL}/expenses/summary`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        fetch("http://localhost:5000/api/expenses/categories", {
+        fetch(`${API_BASE_URL}/expenses/categories`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
