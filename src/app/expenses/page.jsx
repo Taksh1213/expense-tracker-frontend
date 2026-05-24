@@ -51,18 +51,18 @@ export default function ViewExpensesPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start bg-gradient-to-br from-[#e0f2fe] via-[#ecfdf5] to-[#e8f5e9] p-8">
+    <div className="min-h-screen flex flex-col items-center justify-start bg-gradient-to-br from-[#e0f2fe] via-[#ecfdf5] to-[#e8f5e9] p-4 sm:p-8 relative">
       
       {/* ✅ Back Button */}
       <button
         onClick={() => router.push("/dashboard")}
-        className="absolute top-6 left-6 flex items-center gap-2 text-green-700 hover:text-emerald-700 font-semibold bg-white/70 px-4 py-2 rounded-xl shadow-md hover:shadow-lg transition-all backdrop-blur-md border border-green-200"
+        className="self-start sm:absolute sm:top-6 sm:left-6 flex items-center gap-2 text-sm sm:text-base text-green-700 hover:text-emerald-700 font-semibold bg-white/70 px-3 sm:px-4 py-2 rounded-xl shadow-md hover:shadow-lg transition-all backdrop-blur-md border border-green-200"
       >
         <ArrowLeft size={18} /> Back to Dashboard
       </button>
 
-      <div className="bg-white/90 backdrop-blur-md shadow-2xl rounded-3xl w-full max-w-5xl p-8 border border-green-200 mt-20">
-        <h2 className="text-3xl font-semibold text-center mb-8 text-gray-800">
+      <div className="bg-white/90 backdrop-blur-md shadow-2xl rounded-2xl sm:rounded-3xl w-full max-w-5xl p-4 sm:p-8 border border-green-200 mt-6 sm:mt-20">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-8 text-gray-800">
           📊 All Transactions
         </h2>
 
@@ -79,8 +79,8 @@ export default function ViewExpensesPage() {
         {transactions.length === 0 ? (
           <p className="text-gray-500 text-center mt-10">No transactions found.</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-sm text-gray-700">
+          <div className="overflow-x-auto rounded-xl">
+            <table className="min-w-[760px] w-full border-collapse text-sm text-gray-700">
               <thead>
                 <tr className="bg-green-100 text-green-800">
                   <th className="px-4 py-3 text-left rounded-tl-xl">Title</th>

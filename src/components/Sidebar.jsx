@@ -22,8 +22,10 @@ export default function Sidebar({ isOpen }) {
   return (
     <div
       className={`${
-        isOpen ? "w-64" : "w-20"
-      } bg-gradient-to-b from-emerald-500 to-green-600 text-white min-h-screen p-4 flex flex-col transition-all duration-300 ease-in-out`}
+        isOpen
+          ? "translate-x-0 md:w-64"
+          : "-translate-x-full md:translate-x-0 md:w-20"
+      } fixed inset-y-0 left-0 z-30 w-64 bg-gradient-to-b from-emerald-500 to-green-600 text-white min-h-screen p-4 flex flex-col transition-all duration-300 ease-in-out md:static`}
     >
       {/* Logo / App Name */}
       <div className="flex items-center justify-center mb-10 mt-2">

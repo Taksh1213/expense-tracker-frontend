@@ -1,0 +1,11 @@
+{
+  "name": "Expense Tracker",
+  "short_name": "Expense Tracker",
+  "description": "Track expenses, income, balances, categories, and recent transactions.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ecfdf5",
+  "theme_color": "#16a34a",
+  "orientation": "portrait-primary"
+}

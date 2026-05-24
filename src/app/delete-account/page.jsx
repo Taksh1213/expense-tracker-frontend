@@ -48,20 +48,20 @@ export default function DeleteAccountPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#fff5f5] via-[#ffeaea] to-[#fee2e2] p-8 relative">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#fff5f5] via-[#ffeaea] to-[#fee2e2] p-4 sm:p-8 relative">
       
       {/* ✅ Back Button */}
       <button
         onClick={() => router.push("/dashboard")}
-        className="absolute top-6 left-6 flex items-center gap-2 text-gray-700 hover:text-red-600 font-semibold bg-white/70 px-4 py-2 rounded-xl shadow-md hover:shadow-lg transition-all backdrop-blur-md border border-red-200"
+        className="self-start mb-6 sm:mb-0 sm:absolute sm:top-6 sm:left-6 flex items-center gap-2 text-sm sm:text-base text-gray-700 hover:text-red-600 font-semibold bg-white/70 px-3 sm:px-4 py-2 rounded-xl shadow-md hover:shadow-lg transition-all backdrop-blur-md border border-red-200"
       >
         <ArrowLeft size={18} /> Back to Dashboard
       </button>
 
       {/* ✅ Delete Card */}
-      <div className="bg-white/90 backdrop-blur-md shadow-2xl rounded-3xl w-full max-w-md p-10 border border-red-300 text-center">
+      <div className="bg-white/90 backdrop-blur-md shadow-2xl rounded-2xl sm:rounded-3xl w-full max-w-md p-5 sm:p-10 border border-red-300 text-center">
         <Trash2 className="w-12 h-12 text-red-500 mx-auto mb-4" />
-        <h2 className="text-3xl font-semibold text-gray-800 mb-2">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-2">
           Delete Account
         </h2>
         <p className="text-gray-600 mb-6">

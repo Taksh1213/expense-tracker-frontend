@@ -39,7 +39,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#e0f2fe] via-[#ecfdf5] to-[#e8f5e9] overflow-hidden">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#e0f2fe] via-[#ecfdf5] to-[#e8f5e9] overflow-hidden p-4 sm:p-6">
       <AnimatePresence>
         {isSuccess ? (
           <motion.div
@@ -47,9 +47,9 @@ export default function LoginPage() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="bg-white/80 backdrop-blur-lg shadow-2xl rounded-3xl p-10 text-center border border-green-200"
+            className="w-full max-w-md bg-white/80 backdrop-blur-lg shadow-2xl rounded-2xl sm:rounded-3xl p-6 sm:p-10 text-center border border-green-200"
           >
-            <h2 className="text-3xl font-bold text-green-700 mb-2">✅ Welcome back!</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-green-700 mb-2">✅ Welcome back!</h2>
             <p className="text-gray-600">Redirecting to your Dashboard...</p>
           </motion.div>
         ) : (
@@ -58,9 +58,9 @@ export default function LoginPage() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -40, opacity: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="bg-white/80 backdrop-blur-lg shadow-2xl rounded-3xl p-10 w-[450px] max-w-[90%] border border-gray-200"
+            className="w-full max-w-md bg-white/80 backdrop-blur-lg shadow-2xl rounded-2xl sm:rounded-3xl p-6 sm:p-10 border border-gray-200"
           >
-            <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800">
+            <h2 className="text-2xl sm:text-3xl font-semibold mb-6 text-center text-gray-800">
               💸 Welcome Back
             </h2>
 

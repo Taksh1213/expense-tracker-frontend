@@ -42,9 +42,9 @@ export default function LogoutPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#e0f2fe] via-[#ecfdf5] to-[#e8f5e9]">
-      <div className="bg-white/80 backdrop-blur-lg shadow-2xl rounded-3xl p-10 w-[400px] text-center border border-green-200 animate-fadeIn">
-        <h1 className="text-3xl font-semibold text-gray-800 mb-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#e0f2fe] via-[#ecfdf5] to-[#e8f5e9] p-4 sm:p-6">
+      <div className="w-full max-w-sm bg-white/80 backdrop-blur-lg shadow-2xl rounded-2xl sm:rounded-3xl p-6 sm:p-10 text-center border border-green-200 animate-fadeIn">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-4">
           Logging Out...
         </h1>
         <p

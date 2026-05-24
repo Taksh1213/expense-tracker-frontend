@@ -142,18 +142,19 @@ export default function DashboardPage() {
   }, [fetchProfile, fetchSummary, fetchRecent, fetchCategories, router]);
 
   useEffect(() => {
-    // initial fetch
-    fetchData();
-    // poll every 10s
+    const timeout = setTimeout(fetchData, 0);
     const interval = setInterval(fetchData, 10000);
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(timeout);
+      clearInterval(interval);
+    };
   }, [fetchData]);
 
   const balance = (summary.income || 0) - (summary.totalExpense || 0);
   const COLORS = ["#4ade80", "#22c55e", "#16a34a", "#86efac", "#15803d"];
 
   return (
-    <div className="p-8 min-h-screen bg-gradient-to-br from-[#ecfdf5] via-[#e8f5e9] to-[#e0f2fe] transition-colors duration-500">
+    <div className="p-4 sm:p-8 min-h-screen bg-gradient-to-br from-[#ecfdf5] via-[#e8f5e9] to-[#e0f2fe] transition-colors duration-500">
 
       {/* Header (profile) */}
       <motion.div
@@ -164,7 +165,7 @@ export default function DashboardPage() {
       >
         {loadingProfile ? (
           // skeleton for profile
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 min-w-0">
             <div className="w-14 h-14 rounded-full bg-gray-200 animate-pulse" />
             <div className="space-y-2">
               <div className="w-48 h-6 bg-gray-200 rounded-md animate-pulse" />
@@ -184,11 +185,11 @@ export default function DashboardPage() {
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45 }}
-                className="text-2xl font-semibold text-gray-800"
+                className="text-xl sm:text-2xl font-semibold text-gray-800"
               >
                 Hi, {profile.username || "User"} 👋
               </motion.h2>
-              <p className="text-sm text-gray-500">Dashboard updates automatically every 10s ⏱️</p>
+              <p className="text-xs sm:text-sm text-gray-500">Dashboard updates automatically every 10s ⏱️</p>
             </div>
           </div>
         )}
@@ -202,7 +203,7 @@ export default function DashboardPage() {
         animate="show"
       >
         {/** Income Card */}
-        <motion.div variants={itemVariants} className="bg-white rounded-2xl p-6 shadow-md transition-all hover:scale-[1.02]">
+        <motion.div variants={itemVariants} className="bg-white rounded-2xl p-5 sm:p-6 shadow-md transition-all hover:scale-[1.02]">
           {loadingSummary ? (
             <>
               <SkeletonBlock className="h-4 w-28 mb-3" />
@@ -211,7 +212,7 @@ export default function DashboardPage() {
           ) : (
             <>
               <h3 className="text-gray-600 mb-1">Income</h3>
-              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="text-3xl font-semibold text-green-700">
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="text-2xl sm:text-3xl font-semibold text-green-700">
                 ₹{summary.income.toLocaleString("en-IN")}
               </motion.p>
             </>
@@ -219,7 +220,7 @@ export default function DashboardPage() {
         </motion.div>
 
         {/** Expenses Card */}
-        <motion.div variants={itemVariants} className="bg-white rounded-2xl p-6 shadow-md transition-all hover:scale-[1.02]">
+        <motion.div variants={itemVariants} className="bg-white rounded-2xl p-5 sm:p-6 shadow-md transition-all hover:scale-[1.02]">
           {loadingSummary ? (
             <>
               <SkeletonBlock className="h-4 w-28 mb-3" />
@@ -228,7 +229,7 @@ export default function DashboardPage() {
           ) : (
             <>
               <h3 className="text-gray-600 mb-1">Expenses</h3>
-              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="text-3xl font-semibold text-red-500">
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="text-2xl sm:text-3xl font-semibold text-red-500">
                 ₹{summary.totalExpense.toLocaleString("en-IN")}
               </motion.p>
             </>
@@ -236,7 +237,7 @@ export default function DashboardPage() {
         </motion.div>
 
         {/** Balance Card */}
-        <motion.div variants={itemVariants} className="bg-white rounded-2xl p-6 shadow-md transition-all hover:scale-[1.02]">
+        <motion.div variants={itemVariants} className="bg-white rounded-2xl p-5 sm:p-6 shadow-md transition-all hover:scale-[1.02]">
           {loadingSummary ? (
             <>
               <SkeletonBlock className="h-4 w-28 mb-3" />
@@ -245,7 +246,7 @@ export default function DashboardPage() {
           ) : (
             <>
               <h3 className="text-gray-600 mb-1">Balance</h3>
-              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className={`text-3xl font-semibold ${balance >= 0 ? "text-green-600" : "text-red-600"}`}>
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className={`text-2xl sm:text-3xl font-semibold ${balance >= 0 ? "text-green-600" : "text-red-600"}`}>
                 ₹{balance.toLocaleString("en-IN")}
               </motion.p>
             </>
@@ -256,7 +257,7 @@ export default function DashboardPage() {
       {/* Charts & Transactions grid */}
       <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Categories / Pie Chart Card */}
-        <motion.div variants={itemVariants} initial="hidden" animate="show" className="bg-white rounded-2xl p-6 shadow-md">
+        <motion.div variants={itemVariants} initial="hidden" animate="show" className="min-w-0 bg-white rounded-2xl p-4 sm:p-6 shadow-md">
           <h3 className="text-lg font-semibold text-gray-700 mb-4">Expense Categories</h3>
 
           {loadingCategories ? (
@@ -302,7 +303,7 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* Recent Transactions Card */}
-        <motion.div variants={itemVariants} initial="hidden" animate="show" className="bg-white rounded-2xl p-6 shadow-md">
+        <motion.div variants={itemVariants} initial="hidden" animate="show" className="min-w-0 bg-white rounded-2xl p-4 sm:p-6 shadow-md">
           <h3 className="text-lg font-semibold text-gray-700 mb-4">Recent Transactions</h3>
 
           {loadingRecent ? (
@@ -323,7 +324,7 @@ export default function DashboardPage() {
                 <motion.div
                   key={i}
                   whileHover={{ scale: 1.01 }}
-                  className="flex justify-between items-center border-b border-gray-200 pb-2 px-2"
+                  className="flex flex-col gap-1 sm:flex-row sm:justify-between sm:items-center border-b border-gray-200 pb-2 px-2"
                 >
                   <div>
                     <p className="text-gray-700 font-medium">{tx.category}</p>

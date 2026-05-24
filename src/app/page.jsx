@@ -48,11 +48,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#e0f2fe] via-[#ecfdf5] to-[#e8f5e9]">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#e0f2fe] via-[#ecfdf5] to-[#e8f5e9] p-4 sm:p-6">
 
-      <div className="bg-white/80 backdrop-blur-lg shadow-2xl rounded-3xl p-10 w-[450px] max-w-[90%] border border-gray-200">
+      <div className="w-full max-w-md bg-white/80 backdrop-blur-lg shadow-2xl rounded-2xl sm:rounded-3xl p-6 sm:p-10 border border-gray-200">
 
-        <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800">
+        <h2 className="text-2xl sm:text-3xl font-semibold mb-6 text-center text-gray-800">
           💸 Welcome Back
         </h2>
 

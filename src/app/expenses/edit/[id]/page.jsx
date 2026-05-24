@@ -93,19 +93,19 @@ export default function EditTransactionPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start bg-gradient-to-br from-[#e0f2fe] via-[#ecfdf5] to-[#e8f5e9] p-8 relative">
+    <div className="min-h-screen flex flex-col items-center justify-start bg-gradient-to-br from-[#e0f2fe] via-[#ecfdf5] to-[#e8f5e9] p-4 sm:p-8 relative">
 
       {/* ✅ Back to View Page Button */}
       <button
         onClick={() => router.push("/expenses")}
-        className="absolute top-6 left-6 flex items-center gap-2 text-green-700 hover:text-emerald-700 font-semibold bg-white/70 px-4 py-2 rounded-xl shadow-md hover:shadow-lg transition-all backdrop-blur-md border border-green-200"
+        className="self-start sm:absolute sm:top-6 sm:left-6 flex items-center gap-2 text-sm sm:text-base text-green-700 hover:text-emerald-700 font-semibold bg-white/70 px-3 sm:px-4 py-2 rounded-xl shadow-md hover:shadow-lg transition-all backdrop-blur-md border border-green-200"
       >
         <ArrowLeft size={18} /> Back to View All
       </button>
 
       {/* ✅ Form */}
-      <div className="bg-white/90 backdrop-blur-md shadow-2xl rounded-3xl w-full max-w-md p-10 border border-green-200 mt-20">
-        <h2 className="text-3xl font-semibold text-center mb-8 text-gray-800">
+      <div className="bg-white/90 backdrop-blur-md shadow-2xl rounded-2xl sm:rounded-3xl w-full max-w-md p-5 sm:p-10 border border-green-200 mt-6 sm:mt-20">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-8 text-gray-800">
           ✏️ Edit Transaction
         </h2>
 

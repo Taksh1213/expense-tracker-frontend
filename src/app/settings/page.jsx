@@ -6,17 +6,17 @@ import { Sun, Moon, ArrowLeft } from "lucide-react";
 export default function SettingsPage() {
   const router = useRouter();
 
-  const [theme, setTheme] = useState("light");
-  const [currency, setCurrency] = useState("₹");
+  const [theme, setTheme] = useState(() =>
+    typeof window !== "undefined" ? localStorage.getItem("theme") || "light" : "light"
+  );
+  const [currency, setCurrency] = useState(() =>
+    typeof window !== "undefined" ? localStorage.getItem("currency") || "₹" : "₹"
+  );
 
   // ✅ Load settings from localStorage
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") || "light";
-    const savedCurrency = localStorage.getItem("currency") || "₹";
-    setTheme(savedTheme);
-    setCurrency(savedCurrency);
-    document.documentElement.classList.toggle("dark", savedTheme === "dark");
-  }, []);
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  }, [theme]);
 
   // ✅ Handle theme toggle
   const toggleTheme = () => {
@@ -34,8 +34,8 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#e0f2fe] via-[#ecfdf5] to-[#e8f5e9] p-8">
-      <div className="bg-white/90 backdrop-blur-md shadow-2xl rounded-3xl w-full max-w-lg p-10 border border-green-200">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#e0f2fe] via-[#ecfdf5] to-[#e8f5e9] p-4 sm:p-8">
+      <div className="bg-white/90 backdrop-blur-md shadow-2xl rounded-2xl sm:rounded-3xl w-full max-w-lg p-5 sm:p-10 border border-green-200">
         {/* 🔙 Back Button */}
         <button
           onClick={() => router.push("/dashboard")}
@@ -44,12 +44,12 @@ export default function SettingsPage() {
           <ArrowLeft size={18} /> Back to Dashboard
         </button>
 
-        <h2 className="text-3xl font-semibold text-center mb-8 text-gray-800">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-8 text-gray-800">
           ⚙️ Settings
         </h2>
 
         {/* 🌞 Theme Toggle */}
-        <div className="flex items-center justify-between bg-[#f9fefb] p-4 rounded-xl mb-6 border border-green-100 shadow-sm">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-[#f9fefb] p-4 rounded-xl mb-6 border border-green-100 shadow-sm">
           <div>
             <h3 className="text-lg font-medium text-gray-800">Theme</h3>
             <p className="text-sm text-gray-500">
