@@ -1,13 +1,143 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Edit, Trash2 } from "lucide-react";
+import { ArrowLeft, Download, Edit, FileText, Trash2 } from "lucide-react";
 import { API_BASE_URL } from "@/utils/config";
+import { usePreferences } from "@/context/PreferencesContext";
 
 export default function ViewExpensesPage() {
   const router = useRouter();
   const [transactions, setTransactions] = useState([]);
   const [message, setMessage] = useState("");
+  const { currency } = usePreferences();
+
+  const downloadBlob = (content, filename, type) => {
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const escapeCsvValue = (value) => {
+    const text = String(value ?? "");
+    return `"${text.replaceAll('"', '""')}"`;
+  };
+
+  const handleExportCsv = () => {
+    const csv = [
+      ["Title", "Category", "Amount", "Date", "Description"],
+      ...transactions.map((tx) => [
+        tx.title,
+        tx.category,
+        `${currency}${tx.amount}`,
+        new Date(tx.date).toLocaleDateString("en-IN"),
+        tx.description || "",
+      ]),
+    ]
+      .map((row) => row.map(escapeCsvValue).join(","))
+      .join("\n");
+
+    downloadBlob(csv, "transactions.csv", "text/csv;charset=utf-8");
+  };
+
+  const escapePdfText = (value) =>
+    String(value ?? "")
+      .replace(/[^\x20-\x7E]/g, "")
+      .replace(/\\/g, "\\\\")
+      .replace(/\(/g, "\\(")
+      .replace(/\)/g, "\\)");
+
+  const getPdfCurrency = () => {
+    const labels = {
+      "₹": "INR",
+      "$": "USD",
+      "€": "EUR",
+      "£": "GBP",
+      "¥": "JPY",
+    };
+
+    return labels[currency] || currency;
+  };
+
+  const buildPdf = () => {
+    const pdfCurrency = getPdfCurrency();
+    const lines = [
+      "Expense Tracker - Transactions Report",
+      `Generated: ${new Date().toLocaleString("en-IN")}`,
+      "",
+      "Title | Category | Amount | Date | Description",
+      ...transactions.map((tx) => {
+        const date = new Date(tx.date).toLocaleDateString("en-IN");
+        return `${tx.title} | ${tx.category} | ${pdfCurrency} ${tx.amount} | ${date} | ${tx.description || "-"}`;
+      }),
+    ];
+
+    const pages = [];
+    for (let index = 0; index < lines.length; index += 32) {
+      pages.push(lines.slice(index, index + 32));
+    }
+
+    const objects = [];
+    const addObject = (content) => {
+      objects.push(content);
+      return objects.length;
+    };
+
+    const catalogId = addObject("<< /Type /Catalog /Pages 2 0 R >>");
+    const pagesId = addObject("");
+    const pageIds = [];
+    const fontId = 3 + pages.length * 2;
+
+    pages.forEach((page) => {
+      const content = [
+        "BT",
+        "/F1 10 Tf",
+        "50 790 Td",
+        "14 TL",
+        ...page.map((line) => `(${escapePdfText(line).slice(0, 110)}) Tj T*`),
+        "ET",
+      ].join("\n");
+      const contentId = addObject(
+        `<< /Length ${content.length} >>\nstream\n${content}\nendstream`
+      );
+      const pageId = addObject(
+        `<< /Type /Page /Parent ${pagesId} 0 R /MediaBox [0 0 612 842] /Resources << /Font << /F1 ${fontId} 0 R >> >> /Contents ${contentId} 0 R >>`
+      );
+      pageIds.push(pageId);
+    });
+
+    addObject("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>");
+    objects[pagesId - 1] =
+      `<< /Type /Pages /Kids [${pageIds.map((id) => `${id} 0 R`).join(" ")}] /Count ${pageIds.length} >>`;
+
+    let pdf = "%PDF-1.4\n";
+    const offsets = [0];
+
+    objects.forEach((object, index) => {
+      offsets.push(pdf.length);
+      pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
+    });
+
+    const xrefOffset = pdf.length;
+    pdf += `xref\n0 ${objects.length + 1}\n`;
+    pdf += "0000000000 65535 f \n";
+    offsets.slice(1).forEach((offset) => {
+      pdf += `${String(offset).padStart(10, "0")} 00000 n \n`;
+    });
+    pdf += `trailer\n<< /Size ${objects.length + 1} /Root ${catalogId} 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+
+    return pdf;
+  };
+
+  const handleDownloadPdf = () => {
+    downloadBlob(buildPdf(), "transactions-report.pdf", "application/pdf");
+  };
 
   // ✅ Fetch all transactions (both expenses and incomes)
   const fetchTransactions = async () => {
@@ -66,6 +196,25 @@ export default function ViewExpensesPage() {
           📊 All Transactions
         </h2>
 
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+          <button
+            type="button"
+            onClick={handleExportCsv}
+            disabled={transactions.length === 0}
+            className="flex items-center justify-center gap-2 rounded-xl border border-green-200 bg-white/80 px-4 py-2 text-sm font-semibold text-green-700 shadow-sm transition-all hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <FileText size={16} /> Export CSV
+          </button>
+          <button
+            type="button"
+            onClick={handleDownloadPdf}
+            disabled={transactions.length === 0}
+            className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:from-green-600 hover:to-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Download size={16} /> Download PDF
+          </button>
+        </div>
+
         {message && (
           <p
             className={`text-center mb-4 font-medium ${
@@ -85,7 +234,7 @@ export default function ViewExpensesPage() {
                 <tr className="bg-green-100 text-green-800">
                   <th className="px-4 py-3 text-left rounded-tl-xl">Title</th>
                   <th className="px-4 py-3 text-left">Category</th>
-                  <th className="px-4 py-3 text-left">Amount (₹)</th>
+                  <th className="px-4 py-3 text-left">Amount ({currency})</th>
                   <th className="px-4 py-3 text-left">Date</th>
                   <th className="px-4 py-3 text-left">Description</th>
                   <th className="px-4 py-3 text-center rounded-tr-xl">Actions</th>
@@ -104,7 +253,7 @@ export default function ViewExpensesPage() {
                         tx.amount >= 0 ? "text-green-600" : "text-red-500"
                       }`}
                     >
-                      ₹{tx.amount}
+                      {currency}{tx.amount}
                     </td>
                     <td className="px-4 py-3">
                       {new Date(tx.date).toLocaleDateString("en-IN")}

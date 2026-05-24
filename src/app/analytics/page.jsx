@@ -16,12 +16,14 @@ import {
 } from "recharts";
 import { ArrowLeft } from "lucide-react";
 import { API_BASE_URL } from "@/utils/config";
+import { usePreferences } from "@/context/PreferencesContext";
 
 export default function AnalyticsPage() {
   const router = useRouter();
   const [summary, setSummary] = useState({ income: 0, totalExpense: 0 });
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { currency, formatCurrency } = usePreferences();
   const COLORS = ["#16a34a", "#22c55e", "#4ade80", "#86efac", "#15803d"];
 
   // ✅ Fetch analytics data
@@ -104,7 +106,7 @@ export default function AnalyticsPage() {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
-                <Tooltip formatter={(v) => `₹${v}`} />
+                <Tooltip formatter={(v) => `${currency}${v}`} />
                 <Legend />
                 <Bar dataKey="Income" fill="#16a34a" radius={[10, 10, 0, 0]} />
                 <Bar dataKey="Expense" fill="#ef4444" radius={[10, 10, 0, 0]} />
@@ -130,13 +132,13 @@ export default function AnalyticsPage() {
                     outerRadius={100}
                     innerRadius={50}
                     paddingAngle={5}
-                    label={({ name, value }) => `${name} ₹${value}`}
+                    label={({ name, value }) => `${name} ${currency}${value}`}
                   >
                     {categories.map((_, i) => (
                       <Cell key={i} fill={COLORS[i % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(v) => `₹${v}`} />
+                  <Tooltip formatter={(v) => `${currency}${v}`} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
@@ -152,14 +154,14 @@ export default function AnalyticsPage() {
             <div className="w-full sm:w-auto bg-white rounded-2xl p-5 sm:p-6 shadow-md sm:min-w-[200px] text-center border border-green-200">
               <h3 className="text-gray-600 mb-1">Total Income</h3>
               <p className="text-2xl font-semibold text-green-600">
-                ₹{summary.income.toLocaleString("en-IN")}
+                {formatCurrency(summary.income)}
               </p>
             </div>
 
             <div className="w-full sm:w-auto bg-white rounded-2xl p-5 sm:p-6 shadow-md sm:min-w-[200px] text-center border border-green-200">
               <h3 className="text-gray-600 mb-1">Total Expenses</h3>
               <p className="text-2xl font-semibold text-red-500">
-                ₹{summary.totalExpense.toLocaleString("en-IN")}
+                {formatCurrency(summary.totalExpense)}
               </p>
             </div>
 
@@ -170,7 +172,7 @@ export default function AnalyticsPage() {
                   balance >= 0 ? "text-green-600" : "text-red-600"
                 }`}
               >
-                ₹{balance.toLocaleString("en-IN")}
+                {formatCurrency(balance)}
               </p>
             </div>
           </div>

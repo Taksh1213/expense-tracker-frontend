@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react"; // icon for back button
 import { API_BASE_URL } from "@/utils/config";
+import { usePreferences } from "@/context/PreferencesContext";
 
 export default function AddTransactionPage() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function AddTransactionPage() {
     description: "",
   });
   const [message, setMessage] = useState("");
+  const { currency } = usePreferences();
 
   // ✅ Category options
   const expenseCategories = ["Food", "Transport", "Rent", "Entertainment", "Bills", "Shopping", "Health"];
@@ -133,7 +135,7 @@ export default function AddTransactionPage() {
 
           {/* Amount */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Amount (₹)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Amount ({currency})</label>
             <input
               type="number"
               name="amount"

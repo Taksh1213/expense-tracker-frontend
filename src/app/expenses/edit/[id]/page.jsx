@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { API_BASE_URL } from "@/utils/config";
+import { usePreferences } from "@/context/PreferencesContext";
 
 export default function EditTransactionPage() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export default function EditTransactionPage() {
     description: "",
   });
   const [message, setMessage] = useState("");
+  const { currency } = usePreferences();
 
   // ✅ Category options
   const expenseCategories = ["Food", "Transport", "Rent", "Entertainment", "Bills", "Shopping", "Health"];
@@ -135,7 +137,7 @@ export default function EditTransactionPage() {
 
           {/* Amount */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Amount (₹)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Amount ({currency})</label>
             <input
               type="number"
               name="amount"

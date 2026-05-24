@@ -12,6 +12,7 @@ import {
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { API_BASE_URL, API_URL } from "@/utils/config";
+import { usePreferences } from "@/context/PreferencesContext";
 
 /**
  * Dashboard page (JS) — Section-by-section skeleton loading + animations
@@ -47,6 +48,7 @@ export default function DashboardPage() {
   const [loadingSummary, setLoadingSummary] = useState(true);
   const [loadingRecent, setLoadingRecent] = useState(true);
   const [loadingCategories, setLoadingCategories] = useState(true);
+  const { currency, formatCurrency } = usePreferences();
 
   const router = useRouter();
 
@@ -213,7 +215,7 @@ export default function DashboardPage() {
             <>
               <h3 className="text-gray-600 mb-1">Income</h3>
               <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="text-2xl sm:text-3xl font-semibold text-green-700">
-                ₹{summary.income.toLocaleString("en-IN")}
+                {formatCurrency(summary.income)}
               </motion.p>
             </>
           )}
@@ -230,7 +232,7 @@ export default function DashboardPage() {
             <>
               <h3 className="text-gray-600 mb-1">Expenses</h3>
               <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="text-2xl sm:text-3xl font-semibold text-red-500">
-                ₹{summary.totalExpense.toLocaleString("en-IN")}
+                {formatCurrency(summary.totalExpense)}
               </motion.p>
             </>
           )}
@@ -247,7 +249,7 @@ export default function DashboardPage() {
             <>
               <h3 className="text-gray-600 mb-1">Balance</h3>
               <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className={`text-2xl sm:text-3xl font-semibold ${balance >= 0 ? "text-green-600" : "text-red-600"}`}>
-                ₹{balance.toLocaleString("en-IN")}
+                {formatCurrency(balance)}
               </motion.p>
             </>
           )}
@@ -281,7 +283,7 @@ export default function DashboardPage() {
                     innerRadius={50}
                     outerRadius={90}
                     paddingAngle={5}
-                    label={({ name, value }) => `${name} ₹${value}`}
+                    label={({ name, value }) => `${name} ${currency}${value}`}
                     isAnimationActive={true}
                   >
                     {categories.map((_, index) => (
@@ -292,7 +294,7 @@ export default function DashboardPage() {
                       />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value) => `₹${value}`} />
+                  <Tooltip formatter={(value) => `${currency}${value}`} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
@@ -331,7 +333,7 @@ export default function DashboardPage() {
                     <p className="text-sm text-gray-500">{new Date(tx.date).toLocaleDateString()}</p>
                   </div>
                   <p className={`font-semibold ${tx.amount > 0 ? "text-red-500" : "text-green-600"}`}>
-                    ₹{tx.amount.toLocaleString("en-IN")}
+                    {formatCurrency(tx.amount)}
                   </p>
                 </motion.div>
               ))}
