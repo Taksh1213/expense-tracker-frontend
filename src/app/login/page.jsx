@@ -1,6 +1,4 @@
 "use client";
-
-import api from "@/utils/api";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,22 +15,25 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const res = await api.post("/auth/login", {
-        email,
-        password,
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
 
-      // Save access token
-      localStorage.setItem("accessToken", res.data.accessToken);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Login failed");
 
-      // Success animation
+      // ✅ Save access token locally
+      localStorage.setItem("accessToken", data.accessToken);
+
+      // ✅ Trigger success animation
       setIsSuccess(true);
 
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 1200);
+      // ✅ Redirect after short delay
+      setTimeout(() => router.push("/dashboard"), 1200);
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed");
+      setError(err.message);
     }
   };
 
@@ -47,9 +48,7 @@ export default function LoginPage() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className="bg-white/80 backdrop-blur-lg shadow-2xl rounded-3xl p-10 text-center border border-green-200"
           >
-            <h2 className="text-3xl font-bold text-green-700 mb-2">
-              ✅ Welcome back!
-            </h2>
+            <h2 className="text-3xl font-bold text-green-700 mb-2">✅ Welcome back!</h2>
             <p className="text-gray-600">Redirecting to your Dashboard...</p>
           </motion.div>
         ) : (
@@ -81,7 +80,7 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
                   required
-                  className="w-full p-3 rounded-xl border border-green-200 bg-gradient-to-r from-[#f0fdf4] to-[#ecfdf5] text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-green-400 focus:border-green-400 outline-none"
+                  className="w-full p-3 rounded-xl border border-green-200 bg-gradient-to-r from-[#f0fdf4] to-[#ecfdf5] text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-green-400 focus:border-green-400 outline-none shadow-sm transition-all"
                 />
               </div>
 
@@ -95,7 +94,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   required
-                  className="w-full p-3 rounded-xl border border-green-200 bg-gradient-to-r from-[#f0fdf4] to-[#ecfdf5] text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-green-400 focus:border-green-400 outline-none"
+                  className="w-full p-3 rounded-xl border border-green-200 bg-gradient-to-r from-[#f0fdf4] to-[#ecfdf5] text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-green-400 focus:border-green-400 outline-none shadow-sm transition-all"
                 />
               </div>
 

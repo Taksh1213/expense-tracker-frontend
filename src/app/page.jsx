@@ -1,9 +1,11 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -13,28 +15,42 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        }
+      );
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Login failed");
+
+      if (!res.ok) {
+        throw new Error(data.message || "Login failed");
+      }
 
       // ✅ Save access token locally
       localStorage.setItem("accessToken", data.accessToken);
 
       // ✅ Redirect to dashboard
       router.push("/dashboard");
+
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Something went wrong");
     }
   };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#e0f2fe] via-[#ecfdf5] to-[#e8f5e9]">
+
       <div className="bg-white/80 backdrop-blur-lg shadow-2xl rounded-3xl p-10 w-[450px] max-w-[90%] border border-gray-200">
+
         <h2 className="text-3xl font-semibold mb-6 text-center text-gray-800">
           💸 Welcome Back
         </h2>
@@ -46,11 +62,13 @@ export default function LoginPage() {
         )}
 
         <form onSubmit={handleLogin} className="space-y-5">
+
           {/* Email Input */}
           <div>
             <label className="block text-gray-700 text-sm font-medium mb-1">
               Email
             </label>
+
             <input
               type="email"
               value={email}
@@ -66,6 +84,7 @@ export default function LoginPage() {
             <label className="block text-gray-700 text-sm font-medium mb-1">
               Password
             </label>
+
             <input
               type="password"
               value={password}
@@ -83,18 +102,23 @@ export default function LoginPage() {
           >
             Login
           </button>
+
         </form>
 
         <p className="text-sm text-center mt-6 text-gray-600">
           Don’t have an account?{" "}
+
           <a
             href="/register"
             className="text-green-600 font-semibold hover:underline"
           >
             Register
           </a>
+
         </p>
+
       </div>
+
     </div>
   );
 }
